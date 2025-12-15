@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>Runnatic ⚡ Objectif 10km</title>
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Bebas+Neue&family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --primary: #22c55e;
+            --primary-glow: rgba(34, 197, 94, 0.5);
+            --accent: #facc15;
+            --glass: rgba(30, 41, 59, 0.70);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --strava: #fc4c02;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #020617;
+            background-image: radial-gradient(circle at var(--cursor-x, 50%) var(--cursor-y, 50%), #1e293b 0%, #0f172a 40%, #020617 100%);
+            background-attachment: fixed; color: var(--text); margin: 0;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) 100px env(safe-area-inset-left);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 650px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
+
+        /* HEADER */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; animation: fadeInDown 0.8s ease-out; }
+        .logo-container { display: flex; align-items: center; cursor: pointer; gap: 1px; }
+        .logo-img { height: 45px; width: auto; object-fit: contain; filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.3)); }
+        .logo-text { font-size: 1.6rem; font-weight: 900; color: #fff; letter-spacing: -1px; }
+
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+        
+        .icon-btn { 
+            background: rgba(255,255,255,0.05); color: var(--text-muted); 
+            width: 42px; height: 42px; border-radius: 12px; 
+            border: 1px solid var(--glass-border); 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; transition: 0.3s; font-size: 1.1rem; text-decoration: none;
+        }
+        .icon-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-glow); border-color:var(--primary); }
+        .strava-btn { color: var(--strava); border-color: rgba(252, 76, 2, 0.3); }
+        .strava-btn:hover { background: var(--strava); color: white; box-shadow: 0 0 20px rgba(252, 76, 2, 0.4); border-color: var(--strava); }
+
+        /* PROGRESS RING */
+        .progress-container { position: relative; width: 42px; height: 42px; margin-left:5px; }
+        .progress-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+        .progress-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 4; }
+        .progress-bar { fill: none; stroke: var(--primary); stroke-width: 4; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 1s ease; stroke-linecap: round; }
+        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.65rem; font-weight: 700; color: var(--primary); }
+
+        /* SHOE TEASER BOX */
+        .shoe-teaser {
+            background: linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(15, 23, 42, 0.8));
+            border: 1px solid var(--primary-glow); border-radius: 20px; padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; text-decoration: none; cursor: pointer;
+            transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .shoe-teaser:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2); border-color: var(--primary); }
+        .shoe-teaser::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent); transform:translateX(-100%); transition:0.5s; }
+        .shoe-teaser:hover::before { transform:translateX(100%); }
+
+        .st-content { display: flex; align-items: center; gap: 15px; }
+        .st-icon { font-size: 1.5rem; color: var(--primary); background: rgba(34, 197, 94, 0.1); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; }
+        .st-title { font-weight: 900; color: #fff; font-size: 1.1rem; display: block; letter-spacing: -0.5px; font-style: italic; }
+        .st-sub { font-size: 0.75rem; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+
+        /* CONFIG PANEL */
+        .glass-panel { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); overflow: hidden; }
+        .config-box { padding: 25px; margin-bottom: 30px; animation: slideUp 0.6s 0.1s backwards; transition: box-shadow 0.3s, border-color 0.3s; }
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .input-wrapper { position: relative; }
+        
+        input { width: 100%; background: rgba(0,0,0,0.3); border: 2px solid var(--glass-border); border-radius: 16px; padding: 18px; color: #fff; font-size: 1.1rem; font-weight: 700; text-align: center; transition: 0.3s; font-family: inherit; }
+        input:focus { border-color: var(--primary); transform: translateY(-2px); }
+        .label-tiny { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; font-size: 0.6rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; opacity: 0; transition: 0.3s; pointer-events: none; }
+        input:focus + .label-tiny, input:not(:placeholder-shown) + .label-tiny { opacity: 1; top: -10px; }
+        
+        .calc-trigger { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); color: var(--text-muted); width: 30px; height: 30px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+        .calc-trigger:hover { background: var(--primary); color: #000; }
+
+        .btn-action { width: 100%; background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; border: none; padding: 18px; border-radius: 16px; font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.2s; box-shadow: 0 10px 20px -5px var(--primary-glow); }
+        .btn-action:active { transform: scale(0.96); }
+
+        /* MODALS */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(10px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.open { display: flex; opacity: 1; }
+        .modal-content { background: #1e293b; border: 1px solid var(--glass-border); padding: 30px; border-radius: 24px; width: 100%; max-width: 450px; text-align: center; transform: scale(0.95); transition: transform 0.3s; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .modal-overlay.open .modal-content { transform: scale(1); }
+        .modal-title { font-size: 1.4rem; color: var(--primary); margin-bottom: 15px; }
+        .modal-text { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+        .link-close { display: block; margin-top: 20px; font-size: 0.8rem; color: var(--text-muted); text-decoration: underline; cursor: pointer; }
+
+        /* BACKUP BUTTONS */
+        .backup-btn { display:block; width:100%; padding:15px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:white; margin-bottom:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:600;}
+        .backup-btn:hover { background:rgba(255,255,255,0.1); border-color:var(--primary); }
+
+        /* NAVIGATION CONTAINER */
+        .nav-wrapper { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
+        .nav-arrow { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-muted); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+        .nav-arrow:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-glow); }
+        .nav-arrow:active { transform: scale(0.9); }
+        .nav-scroller { display: flex; overflow-x: auto; gap: 10px; padding: 5px; scrollbar-width: none; flex-grow: 1; scroll-behavior: smooth; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); }
+        
+        .week-pill { flex: 0 0 auto; background: rgba(255,255,255,0.05); color: var(--text-muted); padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; transition: 0.2s; border: 1px solid transparent; cursor: pointer; }
+        .week-pill.active { background: var(--text); color: #000; font-weight: 800; border-color: white; box-shadow: none; }
+        .week-pill.race { color: var(--accent); border-color: rgba(250, 204, 21, 0.3); }
+        .week-pill.race.active { background: var(--accent); color: #000; }
+
+        /* SESSION CARDS */
+        .session-card { margin-bottom: 25px; transition: 0.3s; opacity: 0; transform: translateY(20px); }
+        .session-card.visible { opacity: 1; transform: translateY(0); }
+        .session-card.completed { border-color: var(--primary); box-shadow: 0 0 30px rgba(34, 197, 94, 0.15); }
+        .session-card.completed .card-header { background: var(--primary-glow); }
+        .card-header { padding: 15px 25px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .card-title { margin: 0; font-size: 1.1rem; font-weight: 800; }
+        .action-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .action-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .action-btn.check-btn.checked { background: var(--primary); color: #000; border-color: var(--primary); }
+        .timeline-body { padding: 25px; position: relative; }
+        .timeline-body::before { content: ''; position: absolute; left: 41px; top: 35px; bottom: 35px; width: 2px; background: linear-gradient(to bottom, var(--primary) 0%, rgba(255,255,255,0.05) 100%); z-index: 0; }
+        .step-item { display: flex; position: relative; z-index: 1; margin-bottom: 25px; }
+        .step-item:last-child { margin-bottom: 0; }
+        .step-marker { width: 34px; height: 34px; background: #111; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; color: var(--primary); margin-right: 20px; box-shadow: 0 0 0 4px #0f172a; flex-shrink: 0; }
+        .step-content { flex: 1; }
+        .step-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+        .step-duration { font-size: 1.1rem; font-weight: 700; color: #fff; }
+        .step-pace { color: var(--accent); font-weight: 700; font-size: 0.9rem; }
+        .step-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+        
+        .bpm-container { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+        
+        /* BPM EN ROSE (STYLE CARDIO) */
+        .bpm-badge { display: inline-block; background: rgba(239, 68, 68, 0.15); color: #fca5a5; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; border: 1px solid rgba(239, 68, 68, 0.3); }
+        
+        .zone-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; border: 1px solid transparent; }
+
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(50px); background: #fff; color: #000; padding: 12px 24px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; opacity: 0; transition: 0.3s; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 8px; pointer-events: none; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .hidden { display: none; }
+        
+        footer { text-align: center; margin-top: 50px; font-size: 0.8rem; color: var(--text-muted); opacity: 0.6; display: flex; flex-direction: column; gap: 15px; }
+        .footer-link { text-decoration: underline; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .footer-link:hover { color: #fff; }
+        
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div id="installModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title"><i class="fa-solid fa-mobile-screen"></i> Installer l'App</h2>
+        <p class="modal-text">Installe Runnatic pour un accès rapide.</p>
+        <div style="text-align:left; display:flex; flex-direction:column; gap:15px;">
+            <div style="display:flex; gap:10px; align-items:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px;">
+                <i class="fa-brands fa-apple" style="font-size:1.5rem;"></i> <span>Safari > Partager > Sur l'écran d'accueil</span>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px;">
+                <i class="fa-brands fa-android" style="font-size:1.5rem;"></i> <span>Chrome > Menu > Installer l'app</span>
+            </div>
+        </div>
+        <span class="link-close" onclick="closeModal('installModal')">Fermer</span>
+    </div>
+</div>
+
+<div id="vmaModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title"><i class="fa-solid fa-calculator"></i> Calcul VMA</h2>
+        <p class="modal-text">Test Demi-Cooper : Distance parcourue en 6 minutes (en km).</p>
+        <div class="input-wrapper modal-input">
+            <input type="number" id="modalDist" placeholder="ex: 1.45" step="0.01">
+            <div class="label-tiny">KM</div>
+        </div>
+        <button class="btn-action" onclick="calcVmaFromModal()">Valider</button>
+        <span class="link-close" onclick="closeVmaModal()">J'ai déjà ma VMA</span>
+    </div>
+</div>
+
+<div id="calcModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title"><i class="fa-solid fa-calculator"></i> Simulateur</h2>
+        <p class="modal-text">Calcule tes allures pour le 10km.</p>
+        
+        <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; margin-bottom:20px;">
+            <label style="font-size:0.7rem; color:#94a3b8; display:block; margin-bottom:5px; text-align:left;">OBJECTIF 10KM (MIN)</label>
+            <input type="number" id="calcTime" placeholder="ex: 50" oninput="updatePace()">
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; text-align:center; margin-bottom:20px;">
+            <div style="background:rgba(34, 197, 94, 0.1); padding:10px; border-radius:10px; border:1px solid rgba(34, 197, 94, 0.3);">
+                <div style="font-size:0.7rem; color:#94a3b8;">ALLURE</div>
+                <div id="resPace" style="font-size:1.2rem; font-weight:800; color:#fff;">--:--</div>
+                <div style="font-size:0.6rem; color:#22c55e;">/km</div>
+            </div>
+            <div style="background:rgba(250, 204, 21, 0.1); padding:10px; border-radius:10px; border:1px solid rgba(250, 204, 21, 0.3);">
+                <div style="font-size:0.7rem; color:#94a3b8;">VITESSE</div>
+                <div id="resSpeed" style="font-size:1.2rem; font-weight:800; color:#fff;">--</div>
+                <div style="font-size:0.6rem; color:#facc15;">km/h</div>
+            </div>
+        </div>
+
+        <div style="text-align:left; font-size:0.8rem; color:#cbd5e1; background:rgba(255,255,255,0.03); padding:15px; border-radius:10px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Passage 1 km :</span> <span id="split1" style="font-weight:700;">--:--</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Passage 5 km :</span> <span id="split5" style="font-weight:700;">--:--</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>Arrivée 10 km :</span> <span id="split10" style="font-weight:700; color:var(--primary);">--:--</span></div>
+        </div>
+        
+        <span class="link-close" onclick="closeModal('calcModal')">Fermer</span>
+    </div>
+</div>
+
+<div id="backupModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title"><i class="fa-solid fa-floppy-disk"></i> Sauvegarde</h2>
+        <p class="modal-text">Ne perds pas ta progression.</p>
+        <button class="backup-btn" onclick="exportData()"><i class="fa-solid fa-download"></i> Exporter mes données</button>
+        <button class="backup-btn" onclick="document.getElementById('fileInput').click()" style="background:rgba(59, 130, 246, 0.2);"><i class="fa-solid fa-upload"></i> Restaurer une sauvegarde</button>
+        <input type="file" id="fileInput" style="display:none;" onchange="importData(this)">
+        <span class="link-close" onclick="closeModal('backupModal')">Fermer</span>
+    </div>
+</div>
+
+<main class="container">
+    
+    <header>
+        <div class="logo-container" onclick="location.reload()">
+            <img src="logo.png" alt="Runnatic Logo" class="logo-img">
+            <span class="logo-text">unnatic club</span>
+        </div>
+        <div class="header-actions">
+            <a href="https://www.strava.com/clubs/runnatic" target="_blank" class="icon-btn strava-btn" title="Runnatic Club"><i class="fa-brands fa-strava"></i></a>
+            
+            <button class="icon-btn" onclick="openModal('calcModal')" title="Simulateur"><i class="fa-solid fa-calculator"></i></button>
+            
+            <button class="icon-btn" onclick="openModal('installModal')" title="Installer"><i class="fa-solid fa-download"></i></button>
+            <div class="progress-container">
+                <svg class="progress-svg"><circle class="progress-bg" cx="50%" cy="50%" r="20"></circle><circle class="progress-bar" id="globalProgress" cx="50%" cy="50%" r="20"></circle></svg>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+        </div>
+    </header>
+
+
+    <section class="glass-panel config-box" id="configPanel">
+        <div class="input-grid">
+            <div class="input-wrapper">
+                <input type="number" id="age" placeholder="30" min="15" max="90">
+                <div class="label-tiny">ÂGE</div>
+            </div>
+            <div class="input-wrapper">
+                <input type="number" id="vma" placeholder="15.5" step="0.5" min="6" max="26">
+                <div class="label-tiny">VMA</div>
+                <button class="calc-trigger" onclick="openModal('vmaModal')"><i class="fa-solid fa-calculator"></i></button>
+            </div>
+        </div>
+        <button class="btn-action" id="genBtn" onclick="generate()">Générer le Programme</button>
+    </section>
+
+    <section id="program" class="hidden">
+        <div class="nav-wrapper">
+            <button class="nav-arrow" onclick="changeWeek(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <nav class="nav-scroller" id="navWeek"></nav>
+            <button class="nav-arrow" onclick="changeWeek(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        
+        <div id="cardsContainer"></div>
+    </section>
+
+    <footer>
+        <div>Made with 💚 by Runnatic Club</div>
+        <div class="footer-link" onclick="openModal('backupModal')">
+            <i class="fa-solid fa-floppy-disk"></i> Sauvegardes
+        </div>
+    </footer>
+</main>
+
+<div id="toast" class="toast"><i class="fa-solid fa-check"></i> Copié pour Strava !</div>
+
+<script>
+    document.addEventListener('mousemove', (e) => {
+        document.body.style.setProperty('--cursor-x', e.clientX + 'px');
+        document.body.style.setProperty('--cursor-y', e.clientY + 'px');
+    });
+
+    const state = { vma: 0, age: 0, fcm: 0, currentWeek: 1, completed: {} };
+
+    window.onload = () => {
+        loadState();
+        if(!state.vma || !state.age) { setTimeout(() => openModal('vmaModal'), 500); } 
+        else { 
+            document.getElementById('vma').value = state.vma; 
+            document.getElementById('age').value = state.age; 
+            generate(false); 
+        }
+        setupEnterKey();
+    };
+
+    function setupEnterKey() {
+        [document.getElementById('age'), document.getElementById('vma')].forEach(i => i.addEventListener('keypress', e => { if(e.key==='Enter') { i.blur(); generate(true); } }));
+        document.getElementById('modalDist').addEventListener('keypress', e => { if(e.key==='Enter') { document.getElementById('modalDist').blur(); calcVmaFromModal(); } });
+    }
+
+    function loadState() {
+        const saved = localStorage.getItem('runnatic_data');
+        if(saved) {
+            const parsed = JSON.parse(saved);
+            state.vma = parsed.vma; state.age = parsed.age; state.currentWeek = parsed.currentWeek || 1; state.completed = parsed.completed || {};
+        }
+    }
+    function saveState() { localStorage.setItem('runnatic_data', JSON.stringify(state)); updateProgressUI(); }
+
+    function resetApp() {
+        if(confirm("Attention ! Cela va effacer toute ta progression et ta VMA. Continuer ?")) {
+            localStorage.removeItem('runnatic_data');
+            location.reload();
+        }
+    }
+
+    function openModal(id) { const m = document.getElementById(id); m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10); }
+    function closeModal(id) { const m = document.getElementById(id); m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300); }
+    function closeVmaModal() { document.getElementById('vmaModal').classList.remove('open'); }
+
+    // BACKUP
+    function exportData() {
+        const data = JSON.stringify(state);
+        const blob = new Blob([data], {type: "application/json"});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = `runnatic-save-${new Date().toISOString().slice(0,10)}.json`; a.click();
+    }
+    function importData(input) {
+        const file = input.files[0];
+        if(!file) return;
+        const r = new FileReader();
+        r.onload = function(e) {
+            try {
+                const json = JSON.parse(e.target.result);
+                if(json.vma) {
+                    localStorage.setItem('runnatic_data', JSON.stringify(json));
+                    alert("Données restaurées ! ✅"); location.reload();
+                } else { alert("Fichier invalide"); }
+            } catch(err) { alert("Erreur de fichier"); }
+        };
+        r.readAsText(file);
+    }
+
+    function calcVmaFromModal() {
+        let d = parseFloat(document.getElementById('modalDist').value.replace(',', '.'));
+        if(d > 0) {
+            if(d > 10) d = d / 1000;
+            let v = parseFloat((d * 10).toFixed(1));
+            if (v < 6 || v > 26) { alert("VMA invalide (6-26 km/h)"); return; }
+            document.getElementById('vma').value = v;
+            showToast(`<i class="fa-solid fa-calculator"></i> VMA : ${v} km/h`); closeModal('vmaModal');
+            if(document.getElementById('age').value) generate(true);
+        } else { alert("Distance invalide"); }
+    }
+
+    function generate(scroll = true) {
+        let v = parseFloat(document.getElementById('vma').value);
+        let a = parseInt(document.getElementById('age').value);
+        if(!v || !a) { if(scroll) alert('Remplir les champs'); return; }
+        if(v < 6 || v > 26) { alert("Erreur VMA"); return; }
+        if(a < 12 || a > 95) { alert("Erreur Âge"); return; }
+
+        state.vma = v; state.age = a; state.fcm = 207 - (0.7 * a);
+        saveState();
+
+        document.getElementById('program').classList.remove('hidden');
+        
+        renderNav(); renderWeek(state.currentWeek); updateProgressUI();
+        if(scroll) setTimeout(() => document.getElementById('navWeek').scrollIntoView({behavior:'smooth', block:'center'}), 100);
+    }
+
+    // CALCULATEUR D'ALLURE
+    function updatePace() {
+        const dist = 10; // Base 10km
+        const time = parseFloat(document.getElementById('calcTime').value);
+        
+        if(time > 0) {
+            const speed = (dist / (time / 60)).toFixed(1);
+            const totalSeconds = (time * 60) / dist;
+            const paceMin = Math.floor(totalSeconds / 60);
+            const paceSec = Math.round(totalSeconds % 60);
+            const paceStr = `${paceMin}:${paceSec < 10 ? '0' : ''}${paceSec}`;
+            
+            document.getElementById('resSpeed').innerText = speed;
+            document.getElementById('resPace').innerText = paceStr;
+            
+            // Splits
+            document.getElementById('split1').innerText = paceStr;
+            
+            const split5time = (time / 2);
+            const split5m = Math.floor(split5time);
+            const split5s = Math.round((split5time - split5m) * 60);
+            document.getElementById('split5').innerText = `${split5m}:${split5s < 10 ? '0' : ''}${split5s}`;
+            
+            const h = Math.floor(time / 60);
+            const m = Math.floor(time % 60);
+            document.getElementById('split10').innerText = h > 0 ? `${h}h ${m}m` : `${m} min`;
+        } else {
+            document.getElementById('resSpeed').innerText = "--";
+            document.getElementById('resPace').innerText = "--:--";
+            document.getElementById('split1').innerText = "--:--";
+            document.getElementById('split5').innerText = "--:--";
+            document.getElementById('split10').innerText = "--:--";
+        }
+    }
+
+    function updateProgressUI() {
+        const done = Object.values(state.completed).filter(v => v).length;
+        const pct = Math.round((done / 39) * 100);
+        document.getElementById('progressText').innerText = `${pct}%`;
+        const c = document.getElementById('globalProgress');
+        const circ = 126; c.style.strokeDasharray = circ; c.style.strokeDashoffset = circ - (pct / 100) * circ;
+    }
+
+    function changeWeek(dir) {
+        let n = state.currentWeek + dir;
+        if(n < 1) n = 1; if(n > 13) n = 13;
+        if(n !== state.currentWeek) { state.currentWeek = n; saveState(); renderNav(); renderWeek(n); }
+    }
+
+    function renderNav() {
+        const nav = document.getElementById('navWeek'); nav.innerHTML = '';
+        for(let i=1; i<=13; i++) {
+            let p = document.createElement('div');
+            p.className = `week-pill ${i===13?'race':''} ${i===state.currentWeek?'active':''}`;
+            p.innerText = i===13 ? 'RACE 🏁' : `S${i}`;
+            p.onclick = () => { state.currentWeek=i; saveState(); renderNav(); renderWeek(i); };
+            nav.appendChild(p);
+        }
+        setTimeout(() => { const a = nav.querySelector('.active'); if(a) a.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }, 100);
+    }
+
+    // HELPER POUR COULEUR ZONE (5 ZONES)
+    function getZoneClass(z) {
+        if(z.includes("Zone 1")) return "border-color:#3b82f6; color:#3b82f6; background:rgba(59, 130, 246, 0.1);"; // Bleu (Recup)
+        if(z.includes("Zone 2")) return "border-color:#22c55e; color:#22c55e; background:rgba(34, 197, 94, 0.1);"; // Vert (Endurance)
+        if(z.includes("Zone 3")) return "border-color:#eab308; color:#eab308; background:rgba(234, 179, 8, 0.1);"; // Jaune (Tempo)
+        if(z.includes("Zone 4")) return "border-color:#f97316; color:#f97316; background:rgba(249, 115, 22, 0.1);"; // Orange (Seuil)
+        return "border-color:#ef4444; color:#ef4444; background:rgba(239, 68, 68, 0.1);"; // Rouge (Vitesse)
+    }
+
+    function renderWeek(w) {
+        const c = document.getElementById('cardsContainer'); c.innerHTML = '';
+        getSessions(w).forEach((s, idx) => {
+            const isDone = state.completed[`w${w}_s${idx+1}`];
+            let steps = s.steps.map((st, i) => `
+                <div class="step-item">
+                    <div class="step-marker" style="border-color:${isDone?'#22c55e':s.color}; color:${isDone?'#22c55e':s.color}">${i+1}</div>
+                    <div class="step-content">
+                        <div class="step-top"><span class="step-duration">${st.dur}</span>${st.pace ? `<span class="step-pace" style="color:${s.color}">${st.pace}</span>` : ''}</div>
+                        <div class="step-desc">${st.desc}</div>
+                        
+                        ${st.bpm ? `
+                        <div class="bpm-container">
+                            <div class="bpm-badge"><i class="fa-solid fa-heart-pulse"></i> ${st.bpm} bpm</div>
+                            <div class="zone-badge" style="${getZoneClass(st.zone)}">${st.zone}</div>
+                        </div>` : ''}
+                    </div>
+                </div>`).join('');
+            let html = `
+            <article class="glass-panel session-card ${isDone?'completed':''}" style="transition-delay:${idx*0.1}s">
+                <div class="card-header">
+                    <h3 class="card-title">${s.title}</h3>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="copyStrava(${w}, ${idx+1})"><i class="fa-regular fa-clipboard"></i></button>
+                        <button class="action-btn check-btn ${isDone?'checked':''}" onclick="toggleDone(${w}, ${idx+1})"><i class="fa-solid fa-check"></i></button>
+                    </div>
+                </div>
+                <div class="timeline-body">${steps}</div>
+            </article>`;
+            c.insertAdjacentHTML('beforeend', html);
+        });
+        requestAnimationFrame(() => document.querySelectorAll('.session-card').forEach(x => x.classList.add('visible')));
+    }
+
+    function toggleDone(w, sIdx) {
+        const k = `w${w}_s${sIdx}`; 
+        state.completed[k] = !state.completed[k];
+        if (state.completed[k]) {
+            if (navigator.vibrate) navigator.vibrate(50); // Vibration
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#22c55e', '#facc15'] });
+            showToast('<i class="fa-solid fa-fire"></i> Validé !');
+        }
+        saveState(); renderWeek(w);
+    }
+
+    function copyStrava(w, sIdx) {
+        const s = getSessions(w)[sIdx-1];
+        let t = `Runnatic ⚡ Semaine ${w} - ${s.title}\n\n`;
+        s.steps.forEach(st => t += `🔹 ${st.dur} : ${st.desc} ${st.pace ? '('+st.pace+')' : ''}\n`);
+        navigator.clipboard.writeText(t).then(() => showToast('<i class="fa-solid fa-paste"></i> Copié !'));
+    }
+
+    function showToast(h) { const t = document.getElementById('toast'); t.innerHTML = h; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+
+    function getSessions(w) {
+        const pace = (p) => { let s=3600/(state.vma*p), m=Math.floor(s/60), sc=Math.round(s%60); return `${m}:${sc<10?'0':''}${sc}/km`; };
+        const bpm = (min, max) => `${Math.round(state.fcm*min)}-${Math.round(state.fcm*max)}`;
+        
+        const C_EF="#22c55e", C_SEUIL="#facc15", C_RACE="#fbbf24";
+        const P_EF=`${pace(0.70)}-${pace(0.65)}`, P_SEUIL=pace(0.85), P_10K=pace(0.90), P_TEMPO=pace(0.80);
+        
+        // BPM ZONES
+        const B_RECUP=bpm(0.50, 0.60);
+        const B_EF=bpm(0.60, 0.75);
+        const B_TEMPO=bpm(0.75, 0.85);
+        const B_SEUIL=bpm(0.85, 0.92);
+        const B_10K=bpm(0.92, 0.98);
+
+        // LABELS ZONES
+        const Z_1 = "Zone 1 : Récup";
+        const Z_2 = "Zone 2 : Endurance";
+        const Z_3 = "Zone 3 : Tempo";
+        const Z_4 = "Zone 4 : Seuil";
+        const Z_5 = "Zone 5 : Vitesse";
+
+        let s1, s2, s3;
+        
+        if(w===1) {
+            s1={title:"Seuil 60", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"4 x 3 min",desc:`Allure Seuil 60 - Récupération 1:30 min`,pace:P_SEUIL,bpm:B_SEUIL,zone:Z_4},{dur:"5 min",desc:`Retour au calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
+            s2={title:"Endurance Fondamentale", color:C_EF, steps:[{dur:"30 min",desc:`Footing cool`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+            s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"40 min",desc:`Endurance`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+        }
+        else if(w===2) {
+            s1={title:"Seuil 60", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"5 x 3 min",desc:`Allure Seuil 60 - Récupération 1:30 min`,pace:P_SEUIL,bpm:B_SEUIL,zone:Z_4},{dur:"5 min",desc:`Retour au calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
+            s2={title:"Endurance Fondamentale", color:C_EF, steps:[{dur:"30 min",desc:`Footing cool`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+            s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"45 min",desc:`Endurance`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+        }
+        else if(w===3) {
+            s1={title:"Endurance Fondamentale", color:C_EF, steps:[{dur:"30 min",desc:`Footing de récupération`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+            s2={title:"Endurance + Lignes droites", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"6 x 15 sec",desc:"Accélérations - Récupération 45 sec marche",pace:"Vite!"},{dur:"4 min",desc:`Retour au calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
+            s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"30 min",desc:`Sortie courte`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+        }
+        else if(w===4) {
+            s1={title:"Seuil 60", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"6 x 3 min",desc:`Allure Seuil 60 - Récupération 1:30 min`,pace:P_SEUIL,bpm:B_SEUIL,zone:Z_4},{dur:"5 min",desc:`Retour au calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
+            s2={title:"Endurance Fondamentale", color:C_EF, steps:[{dur:"35 min",desc:`Footing cool`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+            s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"50 min",desc:`Endurance`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+        }
+        else if(w===5) {
+             s1={title:"Seuil 60", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"5 x 4 min",desc:`Allure Seuil - Récupération 1:30 min`,pace:P_SEUIL,bpm:B_SEUIL,zone:Z_4},{dur:"5 min",desc:`Retour au calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
+             s2={title:"Endurance + Lignes", color:C_SEUIL, steps:[{dur:"20 min",desc:`Endurance`,pace:P_EF},{dur:"8 x 15 sec",desc:"Lignes droites (Récupération 45 sec)"},{dur:"5 min",desc:`Calme`,pace:P_EF}]};
+             s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"55 min",desc:`Endurance`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+        }
+        else if(w===6) {
+             s1={title:"Endurance", color:C_EF, steps:[{dur:"30 min",desc:`Footing cool`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+             s2={title:"Endurance + Lignes", color:C_SEUIL, steps:[{dur:"20 min",desc:`Endurance`,pace:P_EF,zone:Z_2},{dur:"6 x 15 sec",desc:"Lignes droites (Récupération 45 sec)"},{dur:"4 min",desc:`Retour au calme`,pace:P_EF,zone:Z_1}]};
+             s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"35 min",desc:`Endurance`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+        }
+        else if(w===7) {
+            s1={title:"Allure 10km", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"3 x 6 min",desc:`Allure 10k - Récupération 3 min`,pace:P_10K,bpm:B_10K,zone:Z_5},{dur:"5 min",desc:`Calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
+            s2={title:"Endurance", color:C_EF, steps:[{dur:"45 min",desc:`Footing`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+            s3={title:"Sortie Longue & Active", color:C_SEUIL, steps:[{dur:"20 min",desc:`Endurance`,pace:P_EF,zone:Z_2},{dur:"4 x 5 min",desc:`Allure Active - Récupération 2 min`,pace:P_TEMPO,bpm:B_TEMPO,zone:Z_3},{dur:"12 min",desc:`Calme`,pace:P_EF,zone:Z_1}]};
+        }
+        else if(w===8) {
+            s1={title:"Allure 10km", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"3 x 8 min",desc:`Allure 10k - Récupération 3 min`,pace:P_10K,bpm:B_10K,zone:Z_5},{dur:"5 min",desc:`Calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
+            s2={title:"Endurance", color:C_EF, steps:[{dur:"35 min",desc:`Footing`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+            s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"1h10",desc:`Endurance`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+        }
+        else if(w===9) {
+            s1={title:"Seuil", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"4 x 8 min",desc:`Seuil - Récupération 2 min`,pace:P_SEUIL,bpm:B_SEUIL,zone:Z_4},{dur:"10 min",desc:`Calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
+            s2={title:"Endurance + Lignes", color:C_SEUIL, steps:[{dur:"25 min",desc:`Endurance`,pace:P_EF,zone:Z_2},{dur:"6 x 15 sec",desc:"Lignes droites (Récupération 45 sec)"},{dur:"4 min",desc:`Calme`,pace:P_EF,zone:Z_1}]};
+            s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"45 min",desc:`Endurance (Semaine allégée)`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+        }
+        else if(w===10) {
+            s1={title:"Allure 10km", color:C_SEUIL, steps:[{dur:"20 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"6 x 5 min",desc:`Allure 10k - Récupération 2 min`,pace:P_10K,bpm:B_10K,zone:Z_5},{dur:"10 min",desc:`Calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
+            s2={title:"Endurance", color:C_EF, steps:[{dur:"30 min",desc:`Footing`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+            s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"1h15",desc:`Pic de volume`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+        }
+        else if(w===11) {
+            s1={title:"Seuil Spécifique", color:C_SEUIL, steps:[{dur:"20 min",desc:`Échauffement`,pace:P_EF,zone:Z_2},{dur:"2 x 15 min",desc:`Seuil - Récupération 3 min`,pace:P_SEUIL,bpm:B_SEUIL,zone:Z_4},{dur:"10 min",desc:`Calme`,pace:P_EF,zone:Z_1}]};
+            s2={title:"Endurance", color:C_EF, steps:[{dur:"45 min",desc:`Footing`,pace:P_EF,zone:Z_2}]};
+            s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"1h00",desc:`Endurance`,pace:P_EF,zone:Z_2}]};
+        }
+        else if(w===12) {
+            s1={title:"Rappel Allure 10k", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,zone:Z_2},{dur:"3 x 5 min",desc:`Allure 10k - Récupération 2 min`,pace:P_10K,bpm:B_10K,zone:Z_5},{dur:"10 min",desc:`Calme`,zone:Z_1}]};
+            s2={title:"Endurance", color:C_EF, steps:[{dur:"30 min",desc:`Footing léger`,pace:P_EF,zone:Z_2}]};
+            s3={title:"Sortie Courte", color:C_EF, steps:[{dur:"45 min",desc:`Endurance (On fait du jus)`,pace:P_EF,zone:Z_2}]};
+        }
+        else if(w===13) {
+            s1={title:"Déblocage J-3", color:C_RACE, steps:[{dur:"15 min",desc:`Cool`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"2 x 3 min",desc:`Allure 10k`,pace:P_10K,bpm:B_10K,zone:Z_5},{dur:"5 min",desc:`Calme`,bpm:B_RECUP,zone:Z_1}]};
+            s2={title:"REPOS", color:C_EF, steps:[{dur:"0 min",desc:`Repos complet, hydratation, sommeil`,pace:"",bpm:""}]};
+            s3={title:"JOUR J", color:C_RACE, steps:[{dur:"20 min",desc:`Échauffement`},{dur:"10 KM",desc:`COURSE !`,pace:P_10K,bpm:B_10K,zone:Z_5},{dur:"FINISH",desc:`Bravo !`}]};
+        }
+
+        return [s1, s2, s3];
+    }
+
+    // --- EASTER EGG : TYPING "RUNNATIC" ---
+    const secretCode = ['r', 'u', 'n', 'n', 'a', 't', 'i', 'c'];
+    let codePosition = 0;
+
+    document.addEventListener('keydown', function(e) {
+        const key = e.key.toLowerCase();
+        const requiredKey = secretCode[codePosition];
+
+        if (key === requiredKey) {
+            codePosition++;
+            if (codePosition === secretCode.length) {
+                activateSecretProtocol();
+                codePosition = 0;
+            }
+        } else {
+            codePosition = 0;
+            if (key === 'r') codePosition = 1;
+        }
+    });
+
+    function activateSecretProtocol() {
+        confetti({ 
+            particleCount: 300, 
+            spread: 150, 
+            origin: { y: 0.6 }, 
+            colors: ['#22c55e', '#facc15', '#ffffff'] 
+        });
+        setTimeout(() => {
+            window.location.href = "screensaver.html";
+        }, 1000);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Runnatic ⚡ </title>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* Empêche les barres de défilement */
+            background-color: #020617;
+            background-image: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 40%, #020617 100%);
+            position: relative;
+        }
+
+        #dvdContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px; /* Taille du logo */
+            height: auto;
+            /* Transition fluide pour le changement de couleur */
+            transition: filter 0.2s ease;
+            filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.6));
+            will-change: transform;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Petit message discret pour quitter */
+        .hint {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.1);
+            font-family: monospace;
+            pointer-events: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="dvdContainer">
+        <img src="logo.png" alt="Runnatic DVD Logo">
+    </div>
+
+    <div class="hint">Clique n'importe où pour revenir</div>
+
+    <script>
+        const container = document.getElementById('dvdContainer');
+        const speed = 5.5; // Vitesse du déplacement
+        
+        // Position initiale
+        let x = Math.random() * (window.innerWidth - 200);
+        let y = Math.random() * (window.innerHeight - 100);
+        
+        // Direction initiale (1 ou -1)
+        let dirX = 1;
+        let dirY = 1;
+
+        // Couleurs pour l'effet "DVD" (filtres hue-rotate)
+        // 0 = Vert Runnatic, le reste ce sont des variations
+        let colorIndex = 0;
+        const colors = [
+            'hue-rotate(0deg)',    // Original (Vert)
+            'hue-rotate(45deg)',   // Bleu canard
+            'hue-rotate(90deg)',   // Bleu
+            'hue-rotate(180deg)',  // Violet/Rose
+            'hue-rotate(270deg)',  // Orange
+            'hue-rotate(310deg)'   // Jaune
+        ];
+
+        function animate() {
+            // Dimensions actuelles de la fenêtre (en cas de redimensionnement)
+            const winWidth = window.innerWidth;
+            const winHeight = window.innerHeight;
+            const elWidth = container.clientWidth;
+            const elHeight = container.clientHeight;
+
+            // Détection collision MUR DROIT
+            if (x + elWidth >= winWidth) {
+                dirX = -1;
+                x = winWidth - elWidth; // Évite que ça colle au mur
+                changeColor();
+            }
+            // Détection collision MUR GAUCHE
+            else if (x <= 0) {
+                dirX = 1;
+                x = 0;
+                changeColor();
+            }
+
+            // Détection collision MUR BAS
+            if (y + elHeight >= winHeight) {
+                dirY = -1;
+                y = winHeight - elHeight;
+                changeColor();
+            }
+            // Détection collision MUR HAUT
+            else if (y <= 0) {
+                dirY = 1;
+                y = 0;
+                changeColor();
+            }
+
+            // Mise à jour position
+            x += speed * dirX;
+            y += speed * dirY;
+
+            // Application du mouvement
+            container.style.transform = `translate(${x}px, ${y}px)`;
+
+            requestAnimationFrame(animate);
+        }
+
+        function changeColor() {
+            // Change la couleur au rebond
+            colorIndex = (colorIndex + 1) % colors.length;
+            // On garde le drop-shadow vert ou on peut l'adapter aussi, ici je change tout le filtre
+            container.style.filter = `drop-shadow(0 0 15px rgba(255,255,255,0.4)) ${colors[colorIndex]}`;
+        }
+
+        // Lancer l'animation
+        animate();
+
+        // Clic pour revenir à l'accueil
+        document.body.addEventListener('click', () => {
+            window.location.href = "index.html";
+        });
+    </script>
+
+</body>
+</html>
