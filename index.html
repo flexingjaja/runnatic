@@ -198,39 +198,6 @@
     </div>
 </div>
 
-<div id="calcModal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 class="modal-title"><i class="fa-solid fa-calculator"></i> Simulateur</h2>
-        <p class="modal-text">Calcule tes allures pour le 10km.</p>
-        
-        <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; margin-bottom:20px;">
-            <label style="font-size:0.7rem; color:#94a3b8; display:block; margin-bottom:5px; text-align:left;">OBJECTIF 10KM (MIN)</label>
-            <input type="number" id="calcTime" placeholder="ex: 50" oninput="updatePace()">
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; text-align:center; margin-bottom:20px;">
-            <div style="background:rgba(34, 197, 94, 0.1); padding:10px; border-radius:10px; border:1px solid rgba(34, 197, 94, 0.3);">
-                <div style="font-size:0.7rem; color:#94a3b8;">ALLURE</div>
-                <div id="resPace" style="font-size:1.2rem; font-weight:800; color:#fff;">--:--</div>
-                <div style="font-size:0.6rem; color:#22c55e;">/km</div>
-            </div>
-            <div style="background:rgba(250, 204, 21, 0.1); padding:10px; border-radius:10px; border:1px solid rgba(250, 204, 21, 0.3);">
-                <div style="font-size:0.7rem; color:#94a3b8;">VITESSE</div>
-                <div id="resSpeed" style="font-size:1.2rem; font-weight:800; color:#fff;">--</div>
-                <div style="font-size:0.6rem; color:#facc15;">km/h</div>
-            </div>
-        </div>
-
-        <div style="text-align:left; font-size:0.8rem; color:#cbd5e1; background:rgba(255,255,255,0.03); padding:15px; border-radius:10px;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Passage 1 km :</span> <span id="split1" style="font-weight:700;">--:--</span></div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Passage 5 km :</span> <span id="split5" style="font-weight:700;">--:--</span></div>
-            <div style="display:flex; justify-content:space-between;"><span>Arrivée 10 km :</span> <span id="split10" style="font-weight:700; color:var(--primary);">--:--</span></div>
-        </div>
-        
-        <span class="link-close" onclick="closeModal('calcModal')">Fermer</span>
-    </div>
-</div>
-
 <div id="backupModal" class="modal-overlay">
     <div class="modal-content">
         <h2 class="modal-title"><i class="fa-solid fa-floppy-disk"></i> Sauvegarde</h2>
@@ -247,12 +214,11 @@
     <header>
         <div class="logo-container" onclick="location.reload()">
             <img src="logo.png" alt="Runnatic Logo" class="logo-img">
-            <span class="logo-text">unnatic club</span>
+            <span class="logo-text">unnatic</span>
         </div>
         <div class="header-actions">
             <a href="https://www.strava.com/clubs/runnatic" target="_blank" class="icon-btn strava-btn" title="Runnatic Club"><i class="fa-brands fa-strava"></i></a>
             
-            <button class="icon-btn" onclick="openModal('calcModal')" title="Simulateur"><i class="fa-solid fa-calculator"></i></button>
             
             <button class="icon-btn" onclick="openModal('installModal')" title="Installer"><i class="fa-solid fa-download"></i></button>
             <div class="progress-container">
@@ -642,4 +608,5 @@
     }
 </script>
 </body>
+
 </html>
