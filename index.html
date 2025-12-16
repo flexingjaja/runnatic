@@ -517,9 +517,9 @@
             s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"45 min",desc:`Endurance`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
         }
         else if(w===3) {
-            s1={title:"Endurance Fondamentale", color:C_EF, steps:[{dur:"25 min",desc:`Footing de récupération`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+            s1={title:"Endurance Fondamentale", color:C_EF, steps:[{dur:"30 min",desc:`Footing de récupération`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
             s2={title:"Endurance + Lignes droites", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"6 x 15 sec",desc:"Accélérations - Récupération 45 sec marche",pace:"Vite!"},{dur:"4 min",desc:`Retour au calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
-            s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"45 min",desc:`Endurance`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
+            s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"30 min",desc:`Sortie courte`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
         }
         else if(w===4) {
             s1={title:"Seuil 60", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"6 x 3 min",desc:`Allure Seuil 60 - Récupération 1:30 min`,pace:P_SEUIL,bpm:B_SEUIL,zone:Z_4},{dur:"5 min",desc:`Retour au calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
@@ -528,7 +528,7 @@
         }
         else if(w===5) {
              s1={title:"Seuil 60", color:C_SEUIL, steps:[{dur:"15 min",desc:`Échauffement`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"5 x 4 min",desc:`Allure Seuil - Récupération 1:30 min`,pace:P_SEUIL,bpm:B_SEUIL,zone:Z_4},{dur:"5 min",desc:`Retour au calme`,pace:P_EF,bpm:B_RECUP,zone:Z_1}]};
-             s2={title:"Endurance + Lignes", color:C_SEUIL, steps:[{dur:"20 min",desc:`Endurance`,pace:P_EF},{dur:"8 x 15 sec",desc:"Lignes droites (Récupération 45 sec)"},{dur:"5 min",desc:`Calme`,pace:P_EF}]};
+             s2={title:"Endurance Fondamentale", color:C_EF, steps:[{dur:"35 min",desc:`Footing cool`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
              s3={title:"Sortie Longue", color:C_EF, steps:[{dur:"55 min",desc:`Endurance`,pace:P_EF,bpm:B_EF,zone:Z_2}]};
         }
         else if(w===6) {
@@ -568,7 +568,7 @@
         }
         else if(w===13) {
             s1={title:"Déblocage J-3", color:C_RACE, steps:[{dur:"15 min",desc:`Cool`,pace:P_EF,bpm:B_EF,zone:Z_2},{dur:"2 x 3 min",desc:`Allure 10k`,pace:P_10K,bpm:B_10K,zone:Z_5},{dur:"5 min",desc:`Calme`,bpm:B_RECUP,zone:Z_1}]};
-            s2={title:"REPOS", color:C_EF, steps:[{dur:"0 min",desc:`Repos complet, hydratation, sommeil`,pace:"",bpm:""}]};
+            s2={title:"Endurance + Lignes", color:C_SEUIL, steps:[{dur:"15 min",desc:`Endurance`,pace:P_EF,zone:Z_2},{dur:"3 x 15 sec",desc:"Lignes droites (Récupération 45 sec)"},{dur:"2 min",desc:`Calme`,pace:P_EF,zone:Z_1}]};
             s3={title:"JOUR J", color:C_RACE, steps:[{dur:"20 min",desc:`Échauffement`},{dur:"10 KM",desc:`COURSE !`,pace:P_10K,bpm:B_10K,zone:Z_5},{dur:"FINISH",desc:`Bravo !`}]};
         }
 
